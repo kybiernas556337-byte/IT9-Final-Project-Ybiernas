@@ -251,17 +251,19 @@ export default function Shop({ products }) {
             product_id: Number(i.product_id),
             qty: Number(i.qty)
         }));
-        router.post(route('orders.store'), {
-            items: orderItems,
-        }, {
+        if (!orderItems || orderItems.length === 0) {
+            alert('Your cart is empty.');
+            return;
+        }
+        router.post(route('orders.store'), { items: orderItems }, {
             onSuccess: () => {
                 setCart([]);
                 setShowCart(false);
                 setOrdered(true);
             },
             onError: (errors) => {
-                console.error('Order failed:', errors);
-                alert('Order failed: ' + JSON.stringify(errors));
+                const msg = errors.items || errors.message || JSON.stringify(errors);
+                alert('Order failed: ' + msg);
             },
         });
     };
@@ -420,7 +422,7 @@ export default function Shop({ products }) {
                                     <span>Total</span>
                                     <span>₱{total.toLocaleString()}</span>
                                 </div>
-                                <button onClick={placeOrder}
+                                <button onClick={() => placeOrder()}
                                     className="w-full h-11 bg-green-800 hover:bg-green-700 text-white rounded-xl font-semibold transition-all">
                                     Place Order
                                 </button>
