@@ -51,7 +51,7 @@ COPY . .
 
 # Rename env → .env so Laravel can read it at build time
 # (your file is named "env" not ".env")
-RUN cp .env.example .env
+RUN cp .env.example .env.example.bak
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 RUN php artisan key:generate
