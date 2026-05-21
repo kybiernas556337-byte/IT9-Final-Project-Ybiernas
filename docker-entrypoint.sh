@@ -1,8 +1,10 @@
 #!/bin/bash
 set -e
 
-# At runtime on Render, env vars are injected directly into the process environment.
-# Laravel reads them automatically via $_ENV / getenv() — no .env file needed.
+# Clear cached config so Render env vars are used fresh
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
 
 echo "==> Running migrations..."
 php artisan migrate --force || echo "[WARN] Migration failed — check DB credentials"
