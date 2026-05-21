@@ -212,10 +212,19 @@ export default function Shop({ products }) {
                 if (newQty > product.qty) return prev; // Can't add more
                 return save(prev.map(i => i.product_id === product.id ? { ...i, qty: newQty } : i));
             } else {
-                return save([...prev, { product_id: product.id, qty: 1, product }]);
-            }
-        });
-    };
+             return save([...prev, { 
+    product_id: product.id, 
+    qty: 1, 
+    product: {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        qty: product.qty,
+        unit: product.unit,
+        icon: product.icon,
+        image_path: product.image_path
+    }
+}]);
 
     const changeQty = (product_id, delta) => {
         setCart(prev => save(prev.map(i => {
@@ -235,7 +244,10 @@ export default function Shop({ products }) {
     const total = cart.reduce((sum, i) => sum + i.qty * Number(i.product.price), 0);
 
     const placeOrder = (items = null) => {
-    const orderItems = items || cart.map(i => ({ product_id: i.product_id, qty: i.qty }));
+    const orderItems = items || cart.map(i => ({ 
+        product_id: Number(i.product_id), 
+        qty: Number(i.qty) 
+    }));
     router.post(route('orders.store'), {
         items: orderItems,
     }, {
