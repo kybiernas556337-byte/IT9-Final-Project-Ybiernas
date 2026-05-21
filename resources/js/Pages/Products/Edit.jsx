@@ -28,7 +28,7 @@ export default function ProductEdit({ product }) {
         setPreview(null);
     };
 
-    const currentImage = preview || (product.image_path ? `/storage/${product.image_path}` : null);
+    const currentImage = preview || (product.image_path ? product.image_path : null);
 
     const submit = (e) => {
         e.preventDefault();
