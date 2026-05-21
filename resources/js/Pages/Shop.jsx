@@ -181,6 +181,13 @@ export default function Shop({ products }) {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
 
+    // Sync cart to localStorage whenever it changes (outside of state updaters)
+    useEffect(() => {
+        try {
+            localStorage.setItem(cartKey, JSON.stringify(cart));
+        } catch { /* ignore */ }
+    }, [cart, cartKey]);
+
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const searchParam = urlParams.get('search');
@@ -196,11 +203,6 @@ export default function Shop({ products }) {
         product.category.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const save = (updated) => {
-        localStorage.setItem(cartKey, JSON.stringify(updated));
-        return updated;
-    };
-
     const addToCart = (product) => {
         if (product.qty < 1) return;
         setCart(prev => {
@@ -208,9 +210,9 @@ export default function Shop({ products }) {
             if (existing) {
                 const newQty = existing.qty + 1;
                 if (newQty > product.qty) return prev;
-                return save(prev.map(i => i.product_id === product.id ? { ...i, qty: newQty } : i));
+                return prev.map(i => i.product_id === product.id ? { ...i, qty: newQty } : i);
             } else {
-                return save([...prev, {
+                return [...prev, {
                     product_id: product.id,
                     qty: 1,
                     product: {
@@ -222,24 +224,24 @@ export default function Shop({ products }) {
                         icon: product.icon,
                         image_path: product.image_path
                     }
-                }]);
+                }];
             }
         });
     };
 
     const changeQty = (product_id, delta) => {
-        setCart(prev => save(prev.map(i => {
+        setCart(prev => prev.map(i => {
             if (i.product_id === product_id) {
                 const newQty = Math.max(1, i.qty + delta);
                 if (newQty > i.product.qty) return i;
                 return { ...i, qty: newQty };
             }
             return i;
-        })));
+        }));
     };
 
     const removeItem = (product_id) => {
-        setCart(prev => save(prev.filter(i => i.product_id !== product_id)));
+        setCart(prev => prev.filter(i => i.product_id !== product_id));
     };
 
     const total = cart.reduce((sum, i) => sum + i.qty * Number(i.product.price), 0);
@@ -253,7 +255,6 @@ export default function Shop({ products }) {
             items: orderItems,
         }, {
             onSuccess: () => {
-                save([]);
                 setCart([]);
                 setShowCart(false);
                 setOrdered(true);
