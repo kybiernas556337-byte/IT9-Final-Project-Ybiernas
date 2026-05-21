@@ -22,7 +22,12 @@ class ProductController extends Controller
             'timestamp' => $timestamp,
         ];
         ksort($params);
-        $paramString = http_build_query($params, '', '&', PHP_QUERY_RFC3986);
+        // Build param string manually to avoid URL-encoding (Cloudinary needs raw values)
+        $parts = [];
+        foreach ($params as $k => $v) {
+            $parts[] = $k . '=' . $v;
+        }
+        $paramString = implode('&', $parts);
         $signature   = sha1($paramString . $apiSecret);
 
         $response = Http::attach(
