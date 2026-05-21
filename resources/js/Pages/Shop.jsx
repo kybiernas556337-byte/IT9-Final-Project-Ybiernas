@@ -235,18 +235,22 @@ export default function Shop({ products }) {
     const total = cart.reduce((sum, i) => sum + i.qty * Number(i.product.price), 0);
 
     const placeOrder = (items = null) => {
-        const orderItems = items || cart.map(i => ({ product_id: i.product_id, qty: i.qty }));
-        router.post(route('orders.store'), {
-            items: orderItems,
-        }, {
-            onSuccess: () => {
-                save([]);
-                setCart([]);
-                setShowCart(false);
-                setOrdered(true);
-            },
-        });
-    };
+    const orderItems = items || cart.map(i => ({ product_id: i.product_id, qty: i.qty }));
+    router.post(route('orders.store'), {
+        items: orderItems,
+    }, {
+        onSuccess: () => {
+            save([]);
+            setCart([]);
+            setShowCart(false);
+            setOrdered(true);
+        },
+        onError: (errors) => {
+            console.error('Order failed:', errors);
+            alert('Order failed: ' + JSON.stringify(errors));
+        },
+    });
+};
 
     return (
         <AuthenticatedLayout cartCount={cart.length} onOpenCart={() => setShowCart(true)}>
