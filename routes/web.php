@@ -36,6 +36,14 @@ Route::get('/fix-password', function() {
     }
     return 'All ' . $users->count() . ' passwords updated! Login with password: password123';
 });
+Route::get('/clear-cart', function() {
+    return response('<script>
+        Object.keys(localStorage).forEach(k => { 
+            if(k.startsWith("agro_cart")) localStorage.removeItem(k); 
+        });
+        document.write("Cart cleared! <a href=/shop>Go to Shop</a>");
+    </script>');
+});
 
 require __DIR__.'/auth.php';
 
