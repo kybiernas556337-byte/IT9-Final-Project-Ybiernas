@@ -30,9 +30,11 @@ Route::get('/test-login', function() {
     ];
 });
 Route::get('/fix-password', function() {
-    \App\Models\User::where('email', 'admin@agro.com')
-        ->update(['password' => \Illuminate\Support\Facades\Hash::make('password123')]);
-    return 'Password updated! Try logging in with: admin@agro.com / password123';
+    $users = \App\Models\User::all();
+    foreach($users as $user) {
+        $user->update(['password' => \Illuminate\Support\Facades\Hash::make('password123')]);
+    }
+    return 'All ' . $users->count() . ' passwords updated! Login with password: password123';
 });
 
 require __DIR__.'/auth.php';
