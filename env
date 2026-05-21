@@ -2,7 +2,7 @@ APP_NAME=Laravel
 APP_ENV=production
 APP_KEY=base64:gxcighhz2V+6ipa97ty1q2S/xqCJH7803KTWDuLs5CM=
 APP_DEBUG=false
-APP_URL=http://localhost
+APP_URL=https://it9-final-project-ybiernas-1.onrender.com
 
 APP_LOCALE=en
 APP_FALLBACK_LOCALE=en
@@ -17,12 +17,11 @@ LOG_STACK=single
 LOG_DEPRECATIONS_CHANNEL=null
 LOG_LEVEL=debug
 
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
+DB_HOST=bmcgquryckwvspkk0g08-mysql.services.clever-cloud.com
 DB_PORT=3306
-DB_DATABASE=agrosupply
-DB_USERNAME=root
-DB_PASSWORD=
+DB_DATABASE=bmcgquryckwvspkk0g08
+DB_USERNAME=udifhhqx6olowsge
+DB_PASSWORD=QGSToblnPPF6dyInIkpT
 
 SESSION_DRIVER=database
 SESSION_LIFETIME=120
