@@ -181,7 +181,6 @@ export default function Shop({ products }) {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
 
-    // Handle search from URL params
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const searchParam = urlParams.get('search');
@@ -190,7 +189,6 @@ export default function Shop({ products }) {
         }
     }, []);
 
-    // Filter products based on search query
     const filteredProducts = products.filter(product =>
         searchQuery === '' ||
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -204,33 +202,36 @@ export default function Shop({ products }) {
     };
 
     const addToCart = (product) => {
-        if (product.qty < 1) return; // No stock
+        if (product.qty < 1) return;
         setCart(prev => {
             const existing = prev.find(i => i.product_id === product.id);
             if (existing) {
                 const newQty = existing.qty + 1;
-                if (newQty > product.qty) return prev; // Can't add more
+                if (newQty > product.qty) return prev;
                 return save(prev.map(i => i.product_id === product.id ? { ...i, qty: newQty } : i));
             } else {
-             return save([...prev, { 
-    product_id: product.id, 
-    qty: 1, 
-    product: {
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        qty: product.qty,
-        unit: product.unit,
-        icon: product.icon,
-        image_path: product.image_path
-    }
-}]);
+                return save([...prev, {
+                    product_id: product.id,
+                    qty: 1,
+                    product: {
+                        id: product.id,
+                        name: product.name,
+                        price: product.price,
+                        qty: product.qty,
+                        unit: product.unit,
+                        icon: product.icon,
+                        image_path: product.image_path
+                    }
+                }]);
+            }
+        });
+    };
 
     const changeQty = (product_id, delta) => {
         setCart(prev => save(prev.map(i => {
             if (i.product_id === product_id) {
                 const newQty = Math.max(1, i.qty + delta);
-                if (newQty > i.product.qty) return i; // Can't exceed stock
+                if (newQty > i.product.qty) return i;
                 return { ...i, qty: newQty };
             }
             return i;
@@ -244,25 +245,25 @@ export default function Shop({ products }) {
     const total = cart.reduce((sum, i) => sum + i.qty * Number(i.product.price), 0);
 
     const placeOrder = (items = null) => {
-    const orderItems = items || cart.map(i => ({ 
-        product_id: Number(i.product_id), 
-        qty: Number(i.qty) 
-    }));
-    router.post(route('orders.store'), {
-        items: orderItems,
-    }, {
-        onSuccess: () => {
-            save([]);
-            setCart([]);
-            setShowCart(false);
-            setOrdered(true);
-        },
-        onError: (errors) => {
-            console.error('Order failed:', errors);
-            alert('Order failed: ' + JSON.stringify(errors));
-        },
-    });
-};
+        const orderItems = items || cart.map(i => ({
+            product_id: Number(i.product_id),
+            qty: Number(i.qty)
+        }));
+        router.post(route('orders.store'), {
+            items: orderItems,
+        }, {
+            onSuccess: () => {
+                save([]);
+                setCart([]);
+                setShowCart(false);
+                setOrdered(true);
+            },
+            onError: (errors) => {
+                console.error('Order failed:', errors);
+                alert('Order failed: ' + JSON.stringify(errors));
+            },
+        });
+    };
 
     return (
         <AuthenticatedLayout cartCount={cart.length} onOpenCart={() => setShowCart(true)}>
@@ -327,11 +328,9 @@ export default function Shop({ products }) {
                                 className="bg-white rounded-2xl border border-gray-200 shadow-sm flex flex-col overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer group"
                                 onClick={() => setSelectedProduct(p)}
                             >
-                                {/* Product image */}
                                 <div className="h-44 w-full overflow-hidden bg-green-50">
                                     <ProductImage product={p} className="group-hover:scale-105 transition-transform duration-300" />
                                 </div>
-
                                 <div className="p-4 flex flex-col gap-2 flex-1">
                                     <div className="flex-1">
                                         <div className="font-bold text-gray-800 leading-tight">{p.name}</div>
@@ -362,7 +361,6 @@ export default function Shop({ products }) {
                 </div>
             </div>
 
-            {/* Product detail modal */}
             {selectedProduct && (
                 <ProductModal
                     product={selectedProduct}
@@ -375,7 +373,6 @@ export default function Shop({ products }) {
                 />
             )}
 
-            {/* Cart sidebar */}
             {showCart && (
                 <div className="fixed inset-0 bg-black/50 z-50 flex justify-end">
                     <div className="w-full max-w-md bg-white h-full flex flex-col shadow-xl">
@@ -388,7 +385,6 @@ export default function Shop({ products }) {
                                 <p className="text-gray-400 text-center py-12">Your cart is empty.</p>
                             ) : cart.map(item => (
                                 <div key={item.product_id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                                    {/* Thumbnail */}
                                     <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
                                         <ProductImage product={item.product} />
                                     </div>
