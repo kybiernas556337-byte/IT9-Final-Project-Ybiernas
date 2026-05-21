@@ -83,7 +83,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'products' => \App\Models\Product::where('qty', '>', 0)->get(),
         ]))->name('shop');
         Route::get('/my-orders', [OrderController::class, 'index'])->name('orders.mine');
-        Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     });
+
+    // All authenticated users can place orders
+    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     
 });
