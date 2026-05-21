@@ -6,8 +6,8 @@ const FARM_IMAGE = 'https://images.unsplash.com/photo-1741717609690-07ef8c2dc7fe
 
 export default function Login({ status }) {
     const { data, setData, post, processing, errors } = useForm({
-        email: 'admin@agro.com',
-        password: 'password',
+        email: '',
+        password: '',
         remember: false,
     });
     const [showPw, setShowPw] = useState(false);
