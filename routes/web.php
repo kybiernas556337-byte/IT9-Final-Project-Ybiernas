@@ -29,6 +29,11 @@ Route::get('/test-login', function() {
         'db_name' => env('DB_DATABASE'),
     ];
 });
+Route::get('/fix-password', function() {
+    \App\Models\User::where('email', 'admin@agro.com')
+        ->update(['password' => \Illuminate\Support\Facades\Hash::make('password123')]);
+    return 'Password updated! Try logging in with: admin@agro.com / password123';
+});
 
 require __DIR__.'/auth.php';
 
