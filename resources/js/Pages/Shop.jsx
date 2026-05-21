@@ -9,7 +9,7 @@ function ProductImage({ product, className = '' }) {
     if (product.image_path && !imgError) {
         return (
             <img
-                src={`/storage/${product.image_path}`}
+                src={product.image_path}
                 alt={product.name}
                 className={`w-full h-full object-cover ${className}`}
                 onError={() => setImgError(true)}
@@ -45,7 +45,7 @@ function ProductModal({ product, cart, onClose, onAddToCart, onChangeQty, onRemo
                 <div className="relative w-full h-64 bg-green-50 flex-shrink-0">
                     {product.image_path && !imgError ? (
                         <img
-                            src={`/storage/${product.image_path}`}
+                            src={product.image_path}
                             alt={product.name}
                             className="w-full h-full object-cover"
                             onError={() => setImgError(true)}
