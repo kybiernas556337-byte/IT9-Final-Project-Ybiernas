@@ -15,6 +15,21 @@ Route::get('/clear-all', function() {
     return 'All cleared!';
 });
 
+Route::get('/test-login', function() {
+    $user = \App\Models\User::where('email', 'admin@agro.com')->first();
+    if (!$user) return 'USER NOT FOUND IN DATABASE';
+    
+    $check = \Illuminate\Support\Facades\Hash::check('password', $user->password);
+    return [
+        'user_found' => true,
+        'role' => $user->role,
+        'password_matches' => $check,
+        'password_hash' => substr($user->password, 0, 20),
+        'db_host' => env('DB_HOST'),
+        'db_name' => env('DB_DATABASE'),
+    ];
+});
+
 require __DIR__.'/auth.php';
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -55,4 +70,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/my-orders', [OrderController::class, 'index'])->name('orders.mine');
         Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     });
+    
 });
